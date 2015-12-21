@@ -1,5 +1,13 @@
-.commuteMapsContainer {
-  width: 800px;
+.mapsFixedWidth {
+  width: 1200px;
   max-width: 100%;
   height: 500px;
+  margin-bottom: 10px;
+}
+
+.mapsFullWidth {
+  width: 100%;
+  max-width: 100%;
+  height: 500px;
+  margin-bottom: 10px;
 }

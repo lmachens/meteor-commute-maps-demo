@@ -7,7 +7,11 @@
 </body>
 
 <template name="mainTemplate">
-  <div class="commuteMapsContainer">
-  {{> commuteMaps name="commuteMap" labels=labels}}
+  <div class="mapsFixedWidth">
+  {{> commuteMaps name="commuteMap" labels=labels markers=sampleMarkers1}}
+  </div>
+
+  <div class="mapsFullWidth">
+
   </div>
 </template>
