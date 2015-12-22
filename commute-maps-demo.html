@@ -8,7 +8,11 @@
 
 <template name="mainTemplate">
   <div class="mapsFixedWidth">
-  {{> commuteMaps name="commuteMap" labels=labels markers=sampleMarkers1}}
+    {{#if Template.subscriptionsReady}}
+    {{> commuteMaps name="commuteMap" labels=labels options=options markers=sampleMarkers1 callbacks=callbacks}}
+    {{else}}
+    Loading...
+    {{/if}}
   </div>
 
   <div class="mapsFullWidth">
