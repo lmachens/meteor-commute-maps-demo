@@ -7,15 +7,25 @@
 </body>
 
 <template name="mainTemplate">
+
+  <form class="newMarker form-inline">
+    <div class="form-group">
+      <label for="lat">Latitude</label>
+      <input type="text" class="form-control" id="lat" name="lat" placeholder="Latitude" />
+    </div>
+    <div class="form-group">
+      <label for="lng">Longitude</label>
+      <input type="text" class="form-control" id="lng" name="lng" placeholder="Longitude" />
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
+
   <div class="mapsFixedWidth">
     {{#if Template.subscriptionsReady}}
-    {{> commuteMaps name="commuteMap" labels=labels options=options markers=sampleMarkers1 callbacks=callbacks}}
+    {{> commuteMaps name="commuteMap" labels=labels options=options markers=sampleMarkers1 callbacks=callbacks features=features}}
     {{else}}
     Loading...
     {{/if}}
   </div>
 
-  <div class="mapsFullWidth">
-
-  </div>
 </template>

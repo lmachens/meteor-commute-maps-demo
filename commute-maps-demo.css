@@ -11,3 +11,11 @@
   height: 500px;
   margin-bottom: 10px;
 }
+
+body {
+  margin: 10px;
+}
+
+.newMarker {
+  margin: 10px 0;
+}
