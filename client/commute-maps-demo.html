@@ -21,11 +21,7 @@
   </form>
 
   <div class="mapsFixedWidth">
-    {{#if Template.subscriptionsReady}}
-    {{> commuteMaps name="commuteMap" labels=labels options=options markers=sampleMarkers1 callbacks=callbacks features=features}}
-    {{else}}
-    Loading...
-    {{/if}}
+    {{> commuteMaps name="commuteMap" labels=labels options=options markers=markers callbacks=callbacks features=features}}
   </div>
 
 </template>
