@@ -7,21 +7,18 @@
 </body>
 
 <template name="mainTemplate">
-
-  <form class="newMarker form-inline">
-    <div class="form-group">
-      <label for="lat">Latitude</label>
-      <input type="text" class="form-control" id="lat" name="lat" placeholder="Latitude" />
-    </div>
-    <div class="form-group">
-      <label for="lng">Longitude</label>
-      <input type="text" class="form-control" id="lng" name="lng" placeholder="Longitude" />
-    </div>
-    <button type="submit" class="btn btn-default">Submit</button>
-  </form>
-
-  <div class="mapsFixedWidth">
-    {{> commuteMaps name="commuteMap" labels=labels options=options markers=markers callbacks=callbacks features=features}}
+  <div>
+    <button class="btn btn-default newMarker">New Marker</button>
+    <button class="btn btn-default removeMarker">Remove Marker</button>
+  </div>
+  <div class="full-width">
+    <input class="position {{#if primaryBounds 'map'}}active{{/if}}" value="{{mapBounds}}" disabled>
+    <br>
+    <input class="position {{#if primaryBounds 'distance'}}active{{/if}}" value="{{distanceBounds}}" disabled>
   </div>
 
+  <div class="row full-width">
+    <div class="col-md-8 maps">{{> commuteMaps name="commuteMap" labels=labels options=options markers=markers callbacks=callbacks features=features}}</div>
+    <div class="col-md-4 logs">{{{logs}}}</div>
+  </div>
 </template>

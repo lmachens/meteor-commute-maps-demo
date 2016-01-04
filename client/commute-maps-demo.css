@@ -1,14 +1,11 @@
-.mapsFixedWidth {
-  width: 1200px;
-  max-width: 100%;
+.maps {
   height: 500px;
   margin-bottom: 10px;
 }
 
-.mapsFullWidth {
-  width: 100%;
-  max-width: 100%;
+.logs {
   height: 500px;
+  overflow: auto;
   margin-bottom: 10px;
 }
 
@@ -18,4 +15,21 @@ body {
 
 .newMarker {
   margin: 10px 0;
+}
+
+.active {
+  background-color: green;
+  color: white;
+}
+
+.full-width input.position {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+}
+
+.full-width {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
 }

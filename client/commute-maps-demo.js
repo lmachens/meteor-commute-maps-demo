@@ -7,21 +7,25 @@ Meteor.startup(function () {
 });
 
 Template.mainTemplate.onCreated(function() {
+  Session.set('logs', 'Inititalized<br>');
   var self = this;
   self.neighbourhoodsSubscription = this.subscribe('neighbourhoods');
 
   this.autorun(function(runFunc) {
-    var newMarkerSubscription;
-    var geospatialQuery = Session.get('geospatialQuery');
-    if (geospatialQuery) {
-      newMarkerSubscription = self.subscribe('markers', geospatialQuery);
+    var newMarkersSubscription;
+
+    var showHiddenMarkers = Session.get('showHiddenMarkers');
+    var primaryBounds = Session.get('primaryBounds');
+    if (primaryBounds === 'map' || showHiddenMarkers) {
+      newMarkersSubscription = self.subscribe('markers', Session.get('mapBounds'));
     } else {
-      newMarkerSubscription = self.subscribe('markers');
+      newMarkersSubscription = self.subscribe('markers', Session.get('distanceBounds'));
     }
-    if (self.markerSubscription) {
-      self.markerSubscription.stop();
+
+    if (self.markersSubscription && self.markersSubscription.subscriptionId != newMarkersSubscription.subscriptionId) {
+      self.markersSubscription.stop();
     }
-    self.markerSubscription = newMarkerSubscription;
+    self.markersSubscription = newMarkersSubscription;
   });
 });
 
@@ -39,13 +43,27 @@ Template.mainTemplate.helpers({
   callbacks: function() {
     return {
       markerSelected: function(marker) {
-        console.log(marker);
+        Session.set('logs', 'markerSelected<br>' + Session.get('logs'));
       },
       markerDeselected: function(marker) {
-        console.log(marker);
+        Session.set('logs', 'markerDeselected<br>' + Session.get('logs'));
       },
-      geospatialQueryChanged: function(geospatialQuery) {
-        Session.set('geospatialQuery', geospatialQuery);
+      mapBoundsChanged: function(geospatialQuery, primaryBounds) {
+        if (primaryBounds) {
+          Session.set('primaryBounds', 'map');
+        }
+        Session.set('mapBounds', geospatialQuery);
+      },
+      distanceBoundsChanged: function(geospatialQuery, primaryBounds) {
+        Session.set('distanceBounds', geospatialQuery)
+        Session.set('primaryBounds', 'distance');
+      },
+      showHiddenMarkersChanged: function(showHiddenMarkers) {
+        Session.set('showHiddenMarkers', showHiddenMarkers);
+        Session.set('logs', 'showHiddenMarkers<br>' + Session.get('logs'));
+      },
+      travelModeChanged: function(travelMode) {
+        Session.set('logs', 'travelMode: ' + travelMode + '<br>' + Session.get('logs'));
       }
     }
   },
@@ -54,27 +72,49 @@ Template.mainTemplate.helpers({
       center: {
         lat: '52.514465',
         lng: '13.349547'
-      }
+      },
+      hideCommuteBox: false
     };
   },
   features: function() {
     return Neighbourhoods.find().fetch();
+  },
+  mapBounds: function() {
+    return JSON.stringify(Session.get('mapBounds'));
+  },
+  distanceBounds: function() {
+    return JSON.stringify(Session.get('distanceBounds'));
+  },
+  primaryBounds: function(type) {
+    return Session.get('primaryBounds') === type;
+  },
+  logs: function() {
+    return Session.get('logs');
   }
 });
 
 Template.mainTemplate.events({
-  'submit .newMarker': function(event) {
-    event.preventDefault();
+  'click .newMarker': function(event) {
+    var r = 3000/111300 // = 3000 meters
+      , y0 = 52.522114
+      , x0 = 13.410197
+      , u = Math.random()
+      , v = Math.random()
+      , w = r * Math.sqrt(u)
+      , t = 2 * Math.PI * v
+      , x = w * Math.cos(t)
+      , y1 = w * Math.sin(t)
+      , x1 = x / Math.cos(y0)
 
-    // Get value from form element
-    var lat = event.target.lat.value;
-    var lng = event.target.lng.value;
 
     // Insert a marker into the collection
-    Markers.insert(coordinatesHelper(lat, lng));
+    Markers.insert(coordinatesHelper(y0 + y1, x0 + x1));
+  },
 
-    // Clear form
-    event.target.lat.value = "";
-    event.target.lng.value = "";
+  'click .removeMarker': function(event) {
+    // Remove random marker
+    var skip = Math.floor(Math.random() * Markers.find().count());
+    var random = Markers.findOne({}, { skip: skip });
+    Markers.remove(random._id);
   }
 });
