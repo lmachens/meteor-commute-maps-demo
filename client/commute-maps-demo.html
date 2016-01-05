@@ -18,7 +18,19 @@
   </div>
 
   <div class="row full-width">
-    <div class="col-md-8 maps">{{> commuteMaps name="commuteMap" labels=labels options=options markers=markers callbacks=callbacks features=features}}</div>
-    <div class="col-md-4 logs">{{{logs}}}</div>
+    <div class="col-md-8 maps">
+      {{> commuteMaps name="commuteMap" labels=labels options=options markers=markers showcaseMarkers=showcaseMarkers callbacks=callbacks features=features highlightedMarkers=highlightedMarkers}}
+    </div>
+    <div class="col-md-4 logs">
+      <div style="margin-bottom: 5px;">
+        {{#each showcaseMarkers}}
+        <a class="markerItem" href="#">{{_id}}</a> Travel time: <span id="{{_id}}"></span><br>
+        {{/each}}
+      </div>
+      <div>
+        Logs:<br>
+        {{{logs}}}
+      </div>
+    </div>
   </div>
 </template>
