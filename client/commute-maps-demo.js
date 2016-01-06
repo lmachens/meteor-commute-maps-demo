@@ -7,6 +7,7 @@ Meteor.startup(function () {
 });
 
 Template.mainTemplate.onCreated(function() {
+  Session.set('showcaseIDs', null);
   Session.set('logs', 'Inititalized<br>');
   var self = this;
   self.neighbourhoodsSubscription = this.subscribe('neighbourhoods');
@@ -46,9 +47,11 @@ Template.mainTemplate.helpers({
     return {
       markerSelected: function(marker) {
         Session.set('logs', 'markerSelected<br>' + Session.get('logs'));
+        Session.set('showcaseIDs', marker.markerIDs);
       },
       markerDeselected: function(marker) {
         Session.set('logs', 'markerDeselected<br>' + Session.get('logs'));
+        Session.set('showcaseIDs', null);
       },
       mapBoundsChanged: function(geospatialQuery, primaryBounds) {
         if (primaryBounds) {
@@ -67,7 +70,7 @@ Template.mainTemplate.helpers({
       travelModeChanged: function(travelMode) {
         Session.set('logs', 'travelMode: ' + travelMode + '<br>' + Session.get('logs'));
       },
-      showcaseMarkersInfos: function(id, infos) {
+      showcaseMarkersInfos: function(pairedCoordinates, infos) {
         var html;
         if (!infos) {
           html = '';
@@ -81,7 +84,7 @@ Template.mainTemplate.helpers({
           }
           html = '<i class="' + icon + '"></i> ' + infos.distance.text + ': ' + infos.duration.text;
         }
-        $('#' + id).html(html);
+        $('.' + pairedCoordinates).html(html);
       }
     }
   },
@@ -95,7 +98,8 @@ Template.mainTemplate.helpers({
     };
   },
   features: function() {
-    return Neighbourhoods.find().fetch();
+    //return Neighbourhoods.find().fetch();
+    return null;
   },
   mapBounds: function() {
     return JSON.stringify(Session.get('mapBounds'));
@@ -110,7 +114,13 @@ Template.mainTemplate.helpers({
     return Session.get('logs');
   },
   showcaseMarkers: function() {
-    return Markers.find({}, {limit: 4});
+    var markerIDs = Session.get('showcaseIDs');
+    if (markerIDs) {
+      return Markers.find({_id: {$in: markerIDs}}, {limit: 5});
+    }
+    return Markers.find({}, {
+      limit: 5
+    });
   },
   highlightedMarkers: function() {
     return Template.instance().highlightedMarkers.find();
@@ -135,7 +145,7 @@ Template.mainTemplate.events({
 
     // Insert a marker into the collection
     var coordinates = coordinatesHelper(y0 + y1, x0 + x1);
-    var max = Math.floor(Math.random() * 40 + 1);
+    var max = Math.floor(Math.random() * 99 + 1);
     for (var i=0; i<max; i++) {
       Markers.insert(coordinates);
     }

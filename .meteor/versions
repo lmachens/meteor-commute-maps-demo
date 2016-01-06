@@ -33,8 +33,7 @@ insecure@1.0.4
 jquery@1.11.4
 launch-screen@1.0.4
 livedata@1.0.15
-lmachens:commute-maps@0.0.1
-lmachens:google-maps-inverted-circle@0.0.5
+lmachens:commute-maps@0.0.2
 logging@1.0.8
 meteor@1.1.10
 meteor-base@1.0.1
